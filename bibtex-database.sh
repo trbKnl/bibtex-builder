@@ -27,10 +27,10 @@ if [ $# -eq 1 ] && [ -t 0 ]; then
 		
 		#Check whether supplied file arguments already exists
 		if [ ! -f $1 ]; then			
-			echo "$bibtex" >> ./$1 
+			echo "$bibtex" >> $1 
 			echo "$doi has been added to new BibTex database named $1"
 		else
-			echo "$bibtex" >> ./$1
+			echo "$bibtex" >> $1
 			echo "$doi has been added to $1"
 		fi
 	else
@@ -65,7 +65,7 @@ elif [ $# -eq 1 ] && [ ! -t 0 ]; then
 		bibtex=$( curl -k -s -LH "Accept: text/bibliography; style=bibtex" $doi )
 		
 		if [[ $bibtex == ?@* ]]; then
-			echo "$bibtex" >> ./$1 
+			echo "$bibtex" >> $1 
 			echo "$doi has been added to $1$databaseStatus"
 		else
 			printf "$doi on line $counter did $RED%snot$RESET generate a BibTex entry\n"
