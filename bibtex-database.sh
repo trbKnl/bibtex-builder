@@ -24,18 +24,59 @@ if [ $# -eq 1 ] && [ -t 0 ]; then
 		#Check whether supplied file arguments already exists
 		if [ ! -f $1 ]; then			
 			echo "$bibtex" >> ./$1 
-			echo "A BibTex database named $1 has been created"
+			echo "$doi has been added to new BibTex database named $1"
 		else
 			echo "$bibtex" >> ./$1
-			echo "Entry has been added to $1 database"
+			echo "$doi has been added to $1"
 		fi
 	else
-		echo "Url did not generate a BibTex entry"
+		echo "$doi did not generate a BibTex entry"
 		exit 
 	fi
+
+#check for a stuffed pipe
+#if the pipe is stuffed process the doi's
+elif [ $# -eq 1 ] && [ ! -t 0 ]; then 
+	
+	#set a counter, if curl does not result in a valid key 
+	#you know on which line it happend
+	counter=1
+
+	#check database already exists so the output semantics are correct
+	if [ -f $1 ]; then
+		databaseStatus=", an existing database"
+	else
+		databaseStatus=", a newly created database"
+	fi
+	
+	#read the input from stdIn for each line of the file do		
+	while read doi  
+		do   
+			#check whether the line from stdIn is empty
+			#an empty line results in an error in curl
+			#so if a line is empty, substiute that line with the text empty_line
+			if [ -z "$doi" ]; then
+				doi="empty_line"
+			fi
+
+			bibtex=$( curl -k -s -LH "Accept: text/bibliography; style=bibtex" $doi )
+			if [[ $bibtex == ?@* ]]; then
+				echo "$bibtex" >> ./$1 
+				echo "$doi has been added to $1$databaseStatus"
+			else
+				echo "$doi on line $counter did not generate a BibTex entry"
+			fi
+			counter=$(($counter + 1))		
+	done
+	
 else
-	echo "Name a new or already existing database"
+	echo "Supply a new or already existing database as argument"
 fi
+
+
+
+
+
 
 
 
