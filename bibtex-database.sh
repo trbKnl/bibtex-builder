@@ -50,23 +50,21 @@ elif [ $# -eq 1 ] && [ ! -t 0 ]; then
 	fi
 	
 	#read the input from stdIn for each line of the file do		
-	while read doi  
-		do   
-			#check whether the line from stdIn is empty
-			#an empty line results in an error in curl
-			#so if a line is empty, substiute that line with the text empty_line
-			if [ -z "$doi" ]; then
-				doi="empty_line"
-			fi
-
+	while read doi; do   
+		#check whether the line from stdIn is empty
+		#an empty line results in an error in curl
+		#so if a line is empty, substiute that line with the text empty_line
+		if [ -z "$doi" ]; then
+			doi="empty_line"
+		fi
 			bibtex=$( curl -k -s -LH "Accept: text/bibliography; style=bibtex" $doi )
-			if [[ $bibtex == ?@* ]]; then
-				echo "$bibtex" >> ./$1 
-				echo "$doi has been added to $1$databaseStatus"
-			else
-				echo "$doi on line $counter did not generate a BibTex entry"
-			fi
-			counter=$(($counter + 1))		
+		if [[ $bibtex == ?@* ]]; then
+			echo "$bibtex" >> ./$1 
+			echo "$doi has been added to $1$databaseStatus"
+		else
+			echo "$doi on line $counter did not generate a BibTex entry"
+		fi
+		counter=$(($counter + 1))		
 	done
 	
 else
