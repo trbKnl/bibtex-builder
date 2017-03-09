@@ -4,6 +4,10 @@
 # BibTex-database generator
 ###################################################################
 
+#set color parameter in order to have readable ouput separation
+#RED is use for the word not to indicate a DOI url did not generated a Bibtex entry
+RED=$( tput setaf 196 )
+RESET=$( tput sgr0 )
 
 #check if user supplied arguments or and whether stdIn is not given
 #and if file is not present in the directory
@@ -30,7 +34,7 @@ if [ $# -eq 1 ] && [ -t 0 ]; then
 			echo "$doi has been added to $1"
 		fi
 	else
-		echo "$doi did not generate a BibTex entry"
+		printf "$doi did $RED%snot$RESET generate a BibTex entry\n"
 		exit 
 	fi
 
@@ -64,7 +68,7 @@ elif [ $# -eq 1 ] && [ ! -t 0 ]; then
 			echo "$bibtex" >> ./$1 
 			echo "$doi has been added to $1$databaseStatus"
 		else
-			echo "$doi on line $counter did not generate a BibTex entry"
+			printf "$doi on line $counter did $RED%snot$RESET generate a BibTex entry\n"
 		fi
 		
 		counter=$(($counter + 1))		
