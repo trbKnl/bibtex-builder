@@ -18,7 +18,7 @@ if [ $# -eq 1 ] && [ -t 0 ]; then
 
 	#Basic command to retreive bibtext like style output
 	#based on doi, added the -s
-	bibtex=$( curl -s -LH "Accept: text/bibliography; style=bibtex" $doi )
+	bibtex=$( curl -s -LH "Accept: text/bibliography; style=bibtex" https://doi.org/$doi )
 
 	#check whether the variable starts with a blank and @
 	#curl returns BibTex entries with a leading blank
@@ -62,7 +62,7 @@ elif [ $# -eq 1 ] && [ ! -t 0 ]; then
 			doi="empty_line"
 		fi
 		
-		bibtex=$( curl -k -s -LH "Accept: text/bibliography; style=bibtex" $doi )
+		bibtex=$( curl -k -s -LH "Accept: text/bibliography; style=bibtex" https://doi.org/$doi )
 		
 		if [[ $bibtex == ?@* ]]; then
 			echo "$bibtex" >> $1 
