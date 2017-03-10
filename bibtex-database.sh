@@ -4,6 +4,13 @@
 # BibTex-database generator
 ###################################################################
 
+#function to create neat BibTex output
+function tidyUp {
+		printf "$( echo "$1" | sed 's/}, /},\\n/g' | sed 's/}}/}}\\n/g' | sed 's/ @/@/g' | sed  's/\={/ \= {/g' )"
+}
+
+
+
 #set color parameter in order to have readable ouput separation
 #RED is use for the word not to indicate a DOI url did not generated a Bibtex entry
 RED=$( tput setaf 196 )
@@ -26,11 +33,12 @@ if [ $# -eq 1 ] && [ -t 0 ]; then
 	if [[ $bibtex == ?@* ]]; then
 		
 		#Check whether supplied file arguments already exists
-		if [ ! -f $1 ]; then			
-			echo "$bibtex" >> $1 
+		if [ ! -f $1 ]; then
+			tidyUp "$bibtex" >> $1 
 			echo "$doi has been added to new BibTex database named $1"
 		else
-			echo "$bibtex" >> $1
+			#echo $( tidyUp "$bibtex" )			
+			tidyUp "$bibtex" >> $1 
 			echo "$doi has been added to $1"
 		fi
 	else
@@ -65,7 +73,7 @@ elif [ $# -eq 1 ] && [ ! -t 0 ]; then
 		bibtex=$( curl -k -s -LH "Accept: text/bibliography; style=bibtex" https://doi.org/$doi )
 		
 		if [[ $bibtex == ?@* ]]; then
-			echo "$bibtex" >> $1 
+			tidyUp "$bibtex" >> $1 
 			echo "$doi has been added to $1$databaseStatus"
 		else
 			printf "$doi on line $counter did $RED%snot$RESET generate a BibTex entry\n"
