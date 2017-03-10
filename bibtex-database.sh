@@ -4,17 +4,26 @@
 # BibTex-database generator
 ###################################################################
 
+
+
+
+###################################################################
+# Function and parameters needed for the main script
+
 #function to create neat BibTex output
 function tidyUp {
-		printf "$( echo "$1" | sed 's/}, /},\\n/g' | sed 's/}}/}}\\n/g' | sed 's/ @/@/g' | sed  's/\={/ \= {/g' )"
+	printf "$( echo "$1" | sed 's/}, /},\\n/g' | sed 's/}}/}}\\n/g' | sed 's/ @/@/g' | sed 's/\={/ \= {/g' | sed 's/}}/}}\\n/g' )"
 }
-
 
 
 #set color parameter in order to have readable ouput separation
 #RED is use for the word not to indicate a DOI url did not generated a Bibtex entry
 RED=$( tput setaf 196 )
 RESET=$( tput sgr0 )
+
+
+###################################################################
+# Main script
 
 #check if user supplied arguments or and whether stdIn is not given
 #and if file is not present in the directory
@@ -37,6 +46,13 @@ if [ $# -eq 1 ] && [ -t 0 ]; then
 			tidyUp "$bibtex" >> $1 
 			echo "$doi has been added to new BibTex database named $1"
 		else
+			echo "$1" 
+			
+			#Hier ben ik aan het werk
+
+			#isAlreadyPresent=$( echo $1 | grep "$doi" | wc -l )
+			#echo $isAlreadyPresent
+
 			#echo $( tidyUp "$bibtex" )			
 			tidyUp "$bibtex" >> $1 
 			echo "$doi has been added to $1"
