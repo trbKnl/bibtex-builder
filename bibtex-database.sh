@@ -47,7 +47,7 @@ if [ $# -eq 1 ] && [ -t 0 ]; then
 			#check whether the doi is already in the database
 			isAlreadyPresent=$( cat "$1" | grep "$doi" | wc -l )
 			if [ $isAlreadyPresent -gt 1 ]; then
-				echo "$doi is already in the database" ; exit ; 
+				printf "$doi is $RED%salready$RESET in the database\n" ; exit ; 
 			fi
 
 			tidyUp "$bibtex" >> $1 
@@ -91,7 +91,7 @@ elif [ $# -eq 1 ] && [ ! -t 0 ]; then
 			tidyUp "$bibtex" >> $1 
 			echo "$doi has been added to $1$databaseStatus"
 		elif [[ $bibtex == ?@* ]] && [ $isAlreadyPresent -gt 1 ]; then
-			echo "$doi is already in the database" 
+			printf "$doi is $RED%salready$RESET in the database\n" 
 		else
 			printf "$doi on line $counter did $RED%snot$RESET generate a BibTex entry\n"
 		fi
