@@ -4,9 +4,6 @@
 # BibTex-database generator
 ###################################################################
 
-
-
-
 ###################################################################
 # Function and parameters needed for the main script
 
@@ -46,14 +43,13 @@ if [ $# -eq 1 ] && [ -t 0 ]; then
 			tidyUp "$bibtex" >> $1 
 			echo "$doi has been added to new BibTex database named $1"
 		else
-			echo "$1" 
 			
-			#Hier ben ik aan het werk
+			#check whether the doi is already in the database
+			isAlreadyPresent=$( cat "$1" | grep "$doi" | wc -l )
+			if [ $isAlreadyPresent -gt 1 ]; then
+				echo "$doi is already in the database" ; exit ; 
+			fi
 
-			#isAlreadyPresent=$( echo $1 | grep "$doi" | wc -l )
-			#echo $isAlreadyPresent
-
-			#echo $( tidyUp "$bibtex" )			
 			tidyUp "$bibtex" >> $1 
 			echo "$doi has been added to $1"
 		fi
@@ -88,9 +84,14 @@ elif [ $# -eq 1 ] && [ ! -t 0 ]; then
 		
 		bibtex=$( curl -k -s -LH "Accept: text/bibliography; style=bibtex" https://doi.org/$doi )
 		
-		if [[ $bibtex == ?@* ]]; then
+		#check whether doi is already in the database			
+		isAlreadyPresent=$( cat "$1" | grep "$doi" | wc -l )
+
+		if [[ $bibtex == ?@* ]] && [ $isAlreadyPresent -eq 1 ]; then
 			tidyUp "$bibtex" >> $1 
 			echo "$doi has been added to $1$databaseStatus"
+		elif [[ $bibtex == ?@* ]] && [ $isAlreadyPresent -gt 1 ]; then
+			echo "$doi is already in the database" 
 		else
 			printf "$doi on line $counter did $RED%snot$RESET generate a BibTex entry\n"
 		fi
