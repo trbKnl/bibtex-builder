@@ -78,6 +78,12 @@ else
 	echo "Supply a new or already existing database as argument"
 fi
 
+function bibify {
+ uri=${1/.pdf/}
+ uri=${uri/_/\/}
+ curl -s -LH "Accept: text/bibliography; style=bibtex" https://doi.org/$uri
+}
+
 
 
 
